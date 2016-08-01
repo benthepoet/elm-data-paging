@@ -44,9 +44,9 @@ type Msg = Previous | Next
 update msg model =
     case msg of
         Previous ->
-            model
+            { model | offset = model.offset - 1 }
         Next ->
-            model
+            { model | offset = model.offset + 1 }
 
 renderButtons model = 
     let
