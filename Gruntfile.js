@@ -7,6 +7,13 @@ module.exports = function config(grunt) {
                 }
             }
         },
+        uglify: {
+            default: {
+                files: {
+                    'dist/Main.compiled.js': 'dist/Main.js'
+                }
+            }  
+        },
         connect: {
             default: {
                 options: {
@@ -21,7 +28,10 @@ module.exports = function config(grunt) {
                 files: [
                     'src/**/*.elm'
                 ],
-                tasks: ['elm:default']
+                tasks: [
+                    'elm:default', 
+                    'uglify:default'
+                ]
             }
         }
     };
@@ -29,11 +39,13 @@ module.exports = function config(grunt) {
     grunt.initConfig(config);
     
     grunt.loadNpmTasks('grunt-elm');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-watch');
     
     grunt.registerTask('serve', [
         'elm:default',
+        'uglify:default',
         'connect:default',
         'watch:elm'
     ]);

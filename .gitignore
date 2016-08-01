@@ -4,3 +4,4 @@ elm-stuff/
 repl-temp-*
 # elm-make generated files
 dist/Main.js
+dist/Main.compiled.js
