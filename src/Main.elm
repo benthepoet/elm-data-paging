@@ -1,4 +1,4 @@
-import Html exposing (div, text, table, tr, td, br)
+import Html exposing (div, text, tr, td, br)
 import Html.App exposing (beginnerProgram)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
@@ -69,7 +69,7 @@ renderListItem item =
     
 view model = 
     div []
-        [ table [class "pure-table pure-table-striped"] (List.map renderListItem (pageData model))
+        [ Pure.table [class "pure-table pure-table-striped"] (List.map renderListItem (pageData model))
         , div [] (renderButtons model)
         , div [] 
             [ text ("Offset: " ++ (toString model.offset))
