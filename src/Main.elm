@@ -1,4 +1,4 @@
-import Html exposing (div, text, tr, td, br)
+import Html
 import Html.App exposing (beginnerProgram)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
@@ -52,8 +52,14 @@ update msg model =
 
 renderButtons model = 
     let
-        previous = Pure.button [onClick Previous] [text "Previous"]
-        next = Pure.button [onClick Next] [text "Next"]
+        previous = Html.button 
+            [ Html.Attributes.class Pure.button
+            , onClick Previous
+            ] [Html.text "Previous"]
+        next = Html.button 
+            [ Html.Attributes.class Pure.button
+            , onClick Next
+            ] [ Html.text "Next"]
         dataLength = List.length model.data
         upperBound = model.offset + model.limit
     in
@@ -63,17 +69,24 @@ renderButtons model =
             ]
         
 renderListItem item = 
-    tr [] [ 
-        td [] [text item]
+    Html.tr [] [ 
+        Html.td [] [Html.text item]
         ]
+
+renderListItems model = 
+    List.map renderListItem (pageData model)
     
 view model = 
-    div []
-        [ Pure.table [class "pure-table pure-table-striped"] (List.map renderListItem (pageData model))
-        , div [] (renderButtons model)
-        , div [] 
-            [ text ("Offset: " ++ (toString model.offset))
-            , br [] []
-            , text ("Limit: " ++ (toString model.limit))
+    Html.div []
+        [ Html.table 
+            [ Html.Attributes.classList 
+                [ (Pure.table, True)
+                , (Pure.tableStriped, True)
+                ]
+            ] 
+            (renderListItems model)
+        , Html.div [] (renderButtons model)
+        , Html.form [Html.Attributes.class Pure.form] 
+            [ Html.input [Html.Attributes.type' "text"] []
             ]
         ]
