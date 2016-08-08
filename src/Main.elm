@@ -10,30 +10,36 @@ main =
         , update = update
         , view = view 
         }
-    
+
+
 type alias Model = 
     { limit: Int
     , offset: Int
     , count: Int
-    , data: List String
+    , headers: List String
+    , data: List (List String)
     }
+
 
 model : Model
 model = 
     { limit = 5
     , offset = 0
     , count = 0
+    , headers = 
+        [ "Id"
+        , "Color"
+        , "Size"
+        ]
     , data = 
-        [ "A"
-        , "B"
-        , "C"
-        , "D"
-        , "E"
-        , "F"
-        , "G"
-        , "H"
-        , "I"
-        , "J"]
+        [ ["1", "Blue", "Small"]
+        , ["2", "Red", "Large"]
+        , ["3", "Yellow", "Small"]
+        , ["4", "Green", "Medium"]
+        , ["5", "Orange", "Large"]
+        , ["6", "Purple", "Small"]
+        , ["7", "Blue", "Large"]
+        ]
     }
     
 pageData model = 
@@ -51,42 +57,44 @@ update msg model =
             { model | offset = model.offset + model.limit }
 
 renderButtons model = 
-    let
-        previous = Html.button 
-            [ Html.Attributes.class Pure.button
-            , onClick Previous
-            ] [Html.text "Previous"]
-        next = Html.button 
-            [ Html.Attributes.class Pure.button
-            , onClick Next
-            ] [ Html.text "Next"]
-        dataLength = List.length model.data
-        upperBound = model.offset + model.limit
-    in
-        List.concat
-            [ if model.offset > 0 then [previous] else []
-            , if upperBound < dataLength then [next] else []
-            ]
+    [ Html.button 
+        [ Html.Attributes.class Pure.button
+        , Html.Attributes.disabled (model.offset <= 0)
+        , onClick Previous
+        ] [Html.text "Previous"]
+    , Html.button 
+        [ Html.Attributes.class Pure.button
+        , Html.Attributes.disabled (model.offset + model.limit >= List.length model.data)
+        , onClick Next
+        ] [ Html.text "Next"]
+    ]
         
 renderListItem item = 
-    Html.tr [] [ 
-        Html.td [] [Html.text item]
-        ]
+    Html.tr [] 
+        (List.map (\x -> Html.td [] [Html.text x]) item)
 
 renderListItems model = 
     List.map renderListItem (pageData model)
     
+renderListHeaders headers = 
+    Html.tr []
+        (List.map (\x -> Html.th [] [Html.text x]) headers)
+    
 view model = 
-    Html.div []
-        [ Html.table 
-            [ Html.Attributes.classList 
-                [ (Pure.table, True)
-                , (Pure.tableStriped, True)
+    Html.div [Html.Attributes.class Pure.grid]
+        [ Html.div [Html.Attributes.class (Pure.unit ["1", "3"])] []
+        , Html.div [Html.Attributes.class (Pure.unit ["1", "3"])] 
+            [ Html.h2 [] [Html.text "Practical Elm - Data Paging"]
+            , Html.div [] (renderButtons model)
+            , Html.table 
+                [ Html.Attributes.classList 
+                    [ (Pure.table, True)
+                    , (Pure.tableStriped, True)
+                    ]
+                ] 
+                [ Html.thead [] [renderListHeaders model.headers]
+                , Html.tbody [] (renderListItems model)
                 ]
-            ] 
-            (renderListItems model)
-        , Html.div [] (renderButtons model)
-        , Html.form [Html.Attributes.class Pure.form] 
-            [ Html.input [Html.Attributes.type' "text"] []
             ]
+        , Html.div [Html.Attributes.class (Pure.unit ["1", "3"])] []    
         ]

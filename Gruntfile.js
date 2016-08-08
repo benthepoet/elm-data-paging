@@ -1,10 +1,12 @@
 module.exports = function config(grunt) {
     var config = {
-        elm: {
-            default: {
-                files: {
-                    'dist/Main.js': 'src/Main.elm'
-                }
+        run: {
+            make: {
+                cmd: 'elm-make',
+                args: [
+                    'src/Main.elm',
+                    '--output=dist/Main.js'
+                ]
             }
         },
         uglify: {
@@ -29,7 +31,7 @@ module.exports = function config(grunt) {
                     'src/**/*.elm'
                 ],
                 tasks: [
-                    'elm:default', 
+                    'run:make', 
                     'uglify:default'
                 ]
             }
@@ -38,13 +40,13 @@ module.exports = function config(grunt) {
     
     grunt.initConfig(config);
     
-    grunt.loadNpmTasks('grunt-elm');
+    grunt.loadNpmTasks('grunt-run');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-watch');
     
     grunt.registerTask('serve', [
-        'elm:default',
+        'run:make',
         'uglify:default',
         'connect:default',
         'watch:elm'
