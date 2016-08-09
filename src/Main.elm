@@ -13,9 +13,8 @@ main =
 
 
 type alias Model = 
-    { limit: Int
-    , offset: Int
-    , count: Int
+    { perPage: Int
+    , page: Int
     , headers: List String
     , data: List (List String)
     }
@@ -23,9 +22,8 @@ type alias Model =
 
 model : Model
 model = 
-    { limit = 5
-    , offset = 0
-    , count = 0
+    { perPage = 3
+    , page = 1
     , headers = 
         [ "Id"
         , "Color"
@@ -42,29 +40,42 @@ model =
         ]
     }
     
-pageData model = 
-    model.data
-        |> List.drop model.offset
-        |> List.take model.limit
+pageCount model = 
+    let
+        count = toFloat (List.length model.data)
+        perPage = toFloat model.perPage
+    in
+        ceiling (count / perPage)
     
-type Msg = Previous | Next
+pageData model = 
+    let
+        offset = (model.page - 1) * model.perPage
+        limit = model.perPage
+    in
+        model.data
+            |> List.drop offset
+            |> List.take limit
+        
+type Msg = Previous | Next | Page Int
     
 update msg model =
     case msg of
         Previous ->
-            { model | offset = model.offset - model.limit }
+            { model | page = model.page - 1 }
         Next ->
-            { model | offset = model.offset + model.limit }
+            { model | page = model.page + 1 }
+        Page n ->
+            { model | page = n }
 
 renderButtons model = 
     [ Html.button 
         [ Html.Attributes.class Pure.button
-        , Html.Attributes.disabled (model.offset <= 0)
+        , Html.Attributes.disabled (model.page <= 1)
         , onClick Previous
         ] [Html.text "Previous"]
     , Html.button 
         [ Html.Attributes.class Pure.button
-        , Html.Attributes.disabled (model.offset + model.limit >= List.length model.data)
+        , Html.Attributes.disabled (model.page >= (pageCount model))
         , onClick Next
         ] [ Html.text "Next"]
     ]
@@ -80,12 +91,23 @@ renderListHeaders headers =
     Html.tr []
         (List.map (\x -> Html.th [] [Html.text x]) headers)
     
+renderPageButton page = 
+    Html.button 
+        [ Html.Attributes.class Pure.button
+        , Html.Events.onClick (Page page)]
+        [Html.text (toString page)]
+    
+renderPageButtons count = 
+    Html.div []
+        (List.map renderPageButton [1..count])
+    
 view model = 
     Html.div [Html.Attributes.class Pure.grid]
         [ Html.div [Html.Attributes.class (Pure.unit ["1", "3"])] []
         , Html.div [Html.Attributes.class (Pure.unit ["1", "3"])] 
             [ Html.h2 [] [Html.text "Practical Elm - Data Paging"]
             , Html.div [] (renderButtons model)
+            , renderPageButtons (pageCount model)
             , Html.table 
                 [ Html.Attributes.classList 
                     [ (Pure.table, True)
