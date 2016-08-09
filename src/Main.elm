@@ -22,7 +22,7 @@ type alias Model =
 
 model : Model
 model = 
-    { perPage = 3
+    { perPage = 2
     , page = 1
     , headers = 
         [ "Id"
@@ -91,15 +91,16 @@ renderListHeaders headers =
     Html.tr []
         (List.map (\x -> Html.th [] [Html.text x]) headers)
     
-renderPageButton page = 
+renderPageButton page active = 
     Html.button 
         [ Html.Attributes.class Pure.button
+        , Html.Attributes.disabled (page == active)
         , Html.Events.onClick (Page page)]
         [Html.text (toString page)]
     
-renderPageButtons count = 
+renderPageButtons count active = 
     Html.div []
-        (List.map renderPageButton [1..count])
+        (List.map (\p -> renderPageButton p active) [1..count])
     
 view model = 
     Html.div [Html.Attributes.class Pure.grid]
@@ -107,7 +108,7 @@ view model =
         , Html.div [Html.Attributes.class (Pure.unit ["1", "3"])] 
             [ Html.h2 [] [Html.text "Practical Elm - Data Paging"]
             , Html.div [] (renderButtons model)
-            , renderPageButtons (pageCount model)
+            , renderPageButtons (pageCount model) model.page
             , Html.table 
                 [ Html.Attributes.classList 
                     [ (Pure.table, True)
