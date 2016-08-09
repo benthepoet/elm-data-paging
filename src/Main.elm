@@ -49,18 +49,14 @@ model =
         , ["7", "Blue", "Large"]
         ]
     }
-    
 
-dataCount model =
-    model.data |> List.length
 
-pageCount model = 
+pageCount perPage data = 
     let
-        count = model |> dataCount |> toFloat
-        perPage = toFloat model.perPage
+        count = data |> List.length |> toFloat
     in
-        ceiling (count / perPage)
-    
+        ceiling (count / (toFloat perPage))
+
 
 pageData model = 
     let
@@ -82,7 +78,7 @@ update msg model =
             { model | page = n }
         PerPage n ->
             let
-                count = ceiling ((model |> dataCount |> toFloat) / (n |> toFloat))
+                count = pageCount n model.data 
             in
                 { model | 
                     perPage = n,
@@ -99,13 +95,13 @@ renderButtons model =
         , Html.Attributes.disabled (model.page <= 1)
         , onClick Previous
         ] [Html.text "Previous"]
-    , renderPageButtons (pageCount model) model.page
+    , renderPageButtons (pageCount model.perPage model.data) model.page
     , Html.button 
         [ Html.Attributes.classList 
             [ (Pure.button, True)
             , ("next-button", True)
             ]
-        , Html.Attributes.disabled (model.page >= (pageCount model))
+        , Html.Attributes.disabled (model.page >= (pageCount model.perPage model.data))
         , onClick Next
         ] [ Html.text "Next"]
     ]
