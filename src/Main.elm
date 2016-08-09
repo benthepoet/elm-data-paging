@@ -51,9 +51,12 @@ model =
     }
     
 
+dataCount model =
+    model.data |> List.length
+
 pageCount model = 
     let
-        count = model.data |> List.length |> toFloat
+        count = model |> dataCount |> toFloat
         perPage = toFloat model.perPage
     in
         ceiling (count / perPage)
@@ -78,7 +81,13 @@ update msg model =
         Page n ->
             { model | page = n }
         PerPage n ->
-            { model | perPage = n }
+            let
+                count = ceiling ((model |> dataCount |> toFloat) / (n |> toFloat))
+            in
+                { model | 
+                    perPage = n,
+                    page = if model.page >= count then count else model.page
+                }
 
 
 renderButtons model = 
