@@ -69,12 +69,19 @@ update msg model =
 
 renderButtons model = 
     [ Html.button 
-        [ Html.Attributes.class Pure.button
+        [ Html.Attributes.classList 
+            [ (Pure.button, True)
+            , ("prev-button", True)
+            ]
         , Html.Attributes.disabled (model.page <= 1)
         , onClick Previous
         ] [Html.text "Previous"]
+    , renderPageButtons (pageCount model) model.page
     , Html.button 
-        [ Html.Attributes.class Pure.button
+        [ Html.Attributes.classList 
+            [ (Pure.button, True)
+            , ("next-button", True)
+            ]
         , Html.Attributes.disabled (model.page >= (pageCount model))
         , onClick Next
         ] [ Html.text "Next"]
@@ -99,7 +106,7 @@ renderPageButton page active =
         [Html.text (toString page)]
     
 renderPageButtons count active = 
-    Html.div []
+    Html.span []
         (List.map (\p -> renderPageButton p active) [1..count])
     
 view model = 
@@ -108,7 +115,6 @@ view model =
         , Html.div [Html.Attributes.class (Pure.unit ["1", "3"])] 
             [ Html.h2 [] [Html.text "Practical Elm - Data Paging"]
             , Html.div [] (renderButtons model)
-            , renderPageButtons (pageCount model) model.page
             , Html.table 
                 [ Html.Attributes.classList 
                     [ (Pure.table, True)
