@@ -2,6 +2,7 @@ import Html
 import Html.App exposing (beginnerProgram)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
+import Json.Decode
 import Maybe
 import Result
 import String
@@ -18,6 +19,7 @@ main =
 type alias Model = 
     { perPage: Int
     , page: Int
+    , pageSizes: List String
     , headers: List String
     , data: List (List String)
     }
@@ -34,6 +36,10 @@ model : Model
 model = 
     { perPage = 2
     , page = 1
+    , pageSizes =
+        [ "2"
+        , "5"
+        ]
     , headers = 
         [ "Id"
         , "Color"
@@ -142,6 +148,10 @@ view model =
         , Html.div [Html.Attributes.class (Pure.unit ["1", "3"])] 
             [ Html.h2 [] [Html.text "Practical Elm - Data Paging"]
             , Html.div [] (renderButtons model)
+            , Html.div []
+                [ Html.select [Html.Events.on "change" (Json.Decode.map (\s -> PerPage (s |> String.toInt |> Result.toMaybe |> Maybe.withDefault 2)) Html.Events.targetValue)] 
+                    (List.map (\s -> Html.option [] [Html.text s]) model.pageSizes)
+                ]
             , Html.table 
                 [ Html.Attributes.classList 
                     [ (Pure.table, True)
@@ -151,11 +161,6 @@ view model =
                 [ Html.thead [] [renderListHeaders model.headers]
                 , Html.tbody [] (renderListItems model)
                 ]
-            , Html.input 
-                [ Html.Events.onInput (\s -> PerPage (s |> String.toInt |> Result.toMaybe |> Maybe.withDefault 2))
-                , model.perPage |> toString |> Html.Attributes.value
-                , Html.Attributes.type' "number"
-                ] []
             ]
         , Html.div [Html.Attributes.class (Pure.unit ["1", "3"])] []    
         ]
