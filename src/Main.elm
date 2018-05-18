@@ -1,5 +1,4 @@
-import Html
-import Html.App exposing (beginnerProgram)
+import Html exposing (beginnerProgram)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
 import Json.Decode
@@ -139,7 +138,7 @@ renderPageButton page active =
 
 renderPageButtons count active = 
     Html.span []
-        (List.map (\p -> renderPageButton p active) [1..count])
+        (List.map (\p -> renderPageButton p active) <| List.range 1 count)
 
 
 view model = 
