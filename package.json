@@ -1,7 +1,7 @@
 {
   "name": "elm-data-paging",
   "version": "1.0.0",
-  "description": "",
+  "description": "A demonstration of data paging in Elm.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,8 +10,8 @@
     "type": "git",
     "url": "git+https://github.com/benthepoet/elm-data-paging.git"
   },
-  "author": "Ben Hanna <ben.hanna@botter.ventures>",
-  "license": "MIT",
+  "author": "Ben Hanna <benpaulhanna@gmail.com>",
+  "license": "BSD-3-Clause",
   "bugs": {
     "url": "https://github.com/benthepoet/elm-data-paging/issues"
   },
