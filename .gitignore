@@ -3,7 +3,5 @@ elm-stuff/
 # elm-repl generated files
 repl-temp-*
 # elm-make generated files
-dist/Main.js
-dist/Main.compiled.js
-
+public/bundle.js
 node_modules
