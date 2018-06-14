@@ -1,7 +1,2 @@
-# elm-package generated files
 elm-stuff/
-# elm-repl generated files
-repl-temp-*
-# elm-make generated files
-public/bundle.js
-node_modules
+node_modules/
