@@ -135,7 +135,7 @@ renderPageButton page active =
         , Html.Attributes.disabled (page == active)
         , Html.Events.onClick (Page page)
         ] 
-        [ Html.text (toString page) ]
+        [ Html.text (Debug.toString page) ]
     
 
 renderPageButtons count active = 
@@ -150,7 +150,7 @@ view model =
             [ Html.h2 [] [Html.text "Practical Elm - Data Paging"]
             , Html.div [] (renderButtons model)
             , Html.div []
-                [ Html.select [Html.Events.on "change" (Json.Decode.map (\s -> PerPage (s |> String.toInt |> Result.toMaybe |> Maybe.withDefault 2)) Html.Events.targetValue)] 
+                [ Html.select [Html.Events.on "change" (Json.Decode.map (\s -> PerPage (s |> String.toInt |> Maybe.withDefault 2)) Html.Events.targetValue)] 
                     (List.map (\s -> Html.option [] [Html.text s]) model.pageSizes)
                 ]
             , Html.table 
