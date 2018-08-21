@@ -1,4 +1,5 @@
-import Html exposing (beginnerProgram)
+import Browser
+import Html
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
 import Json.Decode
@@ -8,8 +9,8 @@ import String
 import Pure
 
 main = 
-    beginnerProgram 
-        { model = model
+    Browser.sandbox 
+        { init = initialModel
         , update = update
         , view = view 
         }
@@ -31,8 +32,8 @@ type Msg
     | PerPage Int
 
 
-model : Model
-model = 
+initialModel : Model
+initialModel = 
     { perPage = 2
     , page = 1
     , pageSizes =
@@ -99,7 +100,7 @@ renderButtons model =
             ]
         , Html.Attributes.disabled (model.page <= 1)
         , onClick Previous
-        ] [Html.text "Previous"]
+        ] [ Html.text "Previous" ]
     , renderPageButtons (pageCount model.perPage model.data) model.page
     , Html.button 
         [ Html.Attributes.classList 
@@ -114,7 +115,7 @@ renderButtons model =
 
 renderListItem item = 
     Html.tr [] 
-        (List.map (\x -> Html.td [] [Html.text x]) item)
+        (List.map (\x -> Html.td [] [ Html.text x ]) item)
 
 
 renderListItems model = 
@@ -125,7 +126,7 @@ renderListItems model =
 
 renderListHeaders headers = 
     Html.tr []
-        (List.map (\x -> Html.th [] [Html.text x]) headers)
+        (List.map (\x -> Html.th [] [ Html.text x ]) headers)
     
 
 renderPageButton page active = 
@@ -133,7 +134,8 @@ renderPageButton page active =
         [ Html.Attributes.class Pure.button
         , Html.Attributes.disabled (page == active)
         , Html.Events.onClick (Page page)
-        ] [Html.text (toString page)]
+        ] 
+        [ Html.text (toString page) ]
     
 
 renderPageButtons count active = 
